@@ -15,28 +15,27 @@ int main(void)
 	size_t n;
 	char *argv[] = {NULL,NULL};
 	pid_t child_pid;
-    int status;
+    int status, i;
 
-	child_pid = fork();
-	if (child_pid == -1)
+	while (1)
     {
-        perror("Error:");
-        return (1);
-    }
-	if (child_pid == 0)
-    {
-		printf("#cisfun$");
-		getline(&argv[0], &n, stdin);
-		printf("%s",argv[0]);
-		argv[0][strlen(argv[0]) - 1] = '\0';
-		if (execve(argv[0], argv, NULL) == -1)
+		wait(&status);
+		child_pid = fork();
+		if (child_pid == -1)
 		{
 			perror("Error:");
+			return (1);
+		}
+		if (child_pid == 0)
+		{
+			printf("#cisfun$");
+			getline(&argv[0], &n, stdin);
+			argv[0][strlen(argv[0]) - 1] = '\0';
+			if (execve(argv[0], argv, NULL) == -1)
+			{
+				perror("Error:");
+			}
 		}
     }
-	else
-	{
-		wait(&status);
-	}
     return (0);
 }
